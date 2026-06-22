@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Corretor — Casa Certa</title>
+<style>
+  :root {
+    --verde: #1B4332;
+    --verde-medio: #2D6A4F;
+    --verde-claro: #40916C;
+    --verde-suave: #D8F3DC;
+    --creme: #F8F5F0;
+    --creme-escuro: #EDE8E0;
+    --texto: #1A1A1A;
+    --texto-suave: #5C5C5C;
+    --borda: #D4CFC7;
+    --laranja: #E07B39;
+    --laranja-suave: #FDF0E8;
+    --disponivel: #2D6A4F;
+    --reservado: #E07B39;
+    --vendido: #888;
+    --erro: #C0392B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: var(--creme);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--verde);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icone {
+    width: 34px; height: 34px;
+    background: var(--laranja);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-icone svg { width: 20px; height: 20px; }
+
+  .logo-texto { color: #fff; font-size: 16px; font-weight: bold; font-family: Georgia, serif; }
+  .logo-sub { color: rgba(255,255,255,0.55); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .badge-corretor {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+  }
+
+  /* ABAS */
+  .abas {
+    background: var(--verde);
+    display: flex;
+    gap: 0;
+    padding: 0 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .aba {
+    padding: 12px 18px;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .aba.ativa {
+    color: #fff;
+    border-bottom-color: var(--laranja);
+  }
+
+  .aba:hover { color: rgba(255,255,255,0.85); }
+
+  /* CONTAINER */
+  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  /* SEÇÃO */
+  .secao { display: none; }
+  .secao.ativa { display: block; }
+
+  /* CARD */
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid var(--borda);
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+
+  .card-titulo {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--verde);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* EMPREENDIMENTO CARD */
+  .emp-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid var(--borda);
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+
+  .emp-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .emp-header:hover { background: var(--creme); }
+
+  .emp-info { flex: 1; }
+
+  .emp-nome {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--verde);
+    margin-bottom: 3px;
+  }
+
+  .emp-meta {
+    font-size: 12px;
+    color: var(--texto-suave);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .emp-badges {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  .badge-disp {
+    background: var(--verde-suave);
+    color: var(--verde);
+  }
+
+  .badge-res {
+    background: #FDF0E8;
+    color: var(--laranja);
+  }
+
+  .badge-vend {
+    background: #F0F0F0;
+    color: #888;
+  }
+
+  .emp-chevron {
+    color: var(--texto-suave);
+    font-size: 16px;
+    transition: transform 0.2s;
+    margin-left: 10px;
+  }
+
+  .emp-card.aberto .emp-chevron { transform: rotate(180deg); }
+
+  /* TABELA UNIDADES */
+  .emp-unidades { display: none; border-top: 1px solid var(--borda); }
+  .emp-card.aberto .emp-unidades { display: block; }
+
+  .unidade-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--creme-escuro);
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .unidade-row:last-child { border-bottom: none; }
+
+  .unidade-row.disponivel { background: rgba(45,106,79,0.02); }
+  .unidade-row.reservado { opacity: 0.65; }
+  .unidade-row.vendido { opacity: 0.45; }
+
+  .unidade-nome { font-weight: bold; color: var(--texto); }
+  .unidade-tipo { font-size: 11px; color: var(--texto-suave); margin-top: 1px; }
+
+  .unidade-valor {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--verde);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .status-pill {
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .status-disponivel { background: var(--verde-suave); color: var(--verde); }
+  .status-reservado { background: #FDF0E8; color: var(--laranja); }
+  .status-vendido { background: #F0F0F0; color: #888; }
+
+  .btn-indicar-uni {
+    background: var(--verde);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn-indicar-uni:hover { background: var(--verde-medio); }
+
+  /* FORMULÁRIO */
+  .campo { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--texto);
+    margin-bottom: 5px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  label .obrig { color: var(--laranja); }
+
+  input[type="text"],
+  input[type="tel"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1.5px solid var(--borda);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--texto);
+    background: var(--creme);
+    font-family: Arial, sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--verde-claro);
+    box-shadow: 0 0 0 3px rgba(64,145,108,0.13);
+    background: #fff;
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235C5C5C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    padding-right: 34px;
+    cursor: pointer;
+  }
+
+  .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 420px) { .linha-dupla { grid-template-columns: 1fr; } }
+
+  .msg-erro { color: var(--erro); font-size: 11px; margin-top: 4px; display: none; }
+  input.err, select.err { border-color: var(--erro); }
+
+  /* BTN PRINCIPAL */
+  .btn-principal {
+    width: 100%;
+    padding: 15px;
+    background: var(--verde);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: Arial, sans-serif;
+    margin-top: 4px;
+  }
+
+  .btn-principal:hover { background: var(--verde-medio); transform: translateY(-1px); }
+  .btn-principal:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+
+  /* AVISO */
+  .aviso {
+    background: var(--laranja-suave);
+    border-left: 3px solid var(--laranja);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 13px;
+    font-size: 12px;
+    color: #7A4020;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  /* DESTAQUE */
+  .destaque {
+    background: var(--verde-suave);
+    border-left: 3px solid var(--verde-claro);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 13px;
+    font-size: 12px;
+    color: var(--verde);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  /* SUCESSO */
+  .sucesso-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .sucesso-overlay.visivel { display: flex; }
+
+  .sucesso-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 24px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  }
+
+  .sucesso-icone {
+    width: 64px; height: 64px;
+    background: var(--verde);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 28px;
+  }
+
+  .sucesso-box h2 { color: var(--verde); font-size: 20px; margin-bottom: 8px; font-family: Georgia, serif; }
+  .sucesso-box p { color: var(--texto-suave); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+
+  .protocolo-num {
+    display: inline-block;
+    background: var(--creme-escuro);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--verde);
+    margin-bottom: 20px;
+    letter-spacing: 0.06em;
+  }
+
+  .btn-fechar {
+    background: var(--verde);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+  }
+
+  /* SPINNER */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 3px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ERRO GERAL */
+  .erro-geral {
+    background: rgba(192,57,43,0.08);
+    border: 1.5px solid rgba(192,57,43,0.25);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--erro);
+    text-align: center;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* RESUMO STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--borda);
+    padding: 14px 10px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 26px;
+    font-weight: bold;
+    font-family: Georgia, serif;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 11px; color: var(--texto-suave); line-height: 1.3; }
+  .stat-num.verde { color: var(--verde); }
+  .stat-num.laranja { color: var(--laranja); }
+  .stat-num.cinza { color: #aaa; }
+
+  /* PREÇO RANGE */
+  .preco-range {
+    font-size: 11px;
+    color: var(--texto-suave);
+    margin-top: 2px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+    color: var(--texto-suave);
+    border-top: 1px solid var(--borda);
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round">
+        <path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-texto">Casa Certa</div>
+      <div class="logo-sub">Portal do Corretor</div>
+    </div>
+  </div>
+  <div class="badge-corretor" id="badge-imob">Carregando...</div>
+</header>
+
+<div class="abas">
+  <div class="aba ativa" onclick="mudarAba('disponibilidade', this)">🏢 Disponibilidade</div>
+  <div class="aba" onclick="mudarAba('indicar', this)">🔒 Solicitar Reserva</div>
+  <div class="aba" onclick="mudarAba('minhas', this)">📊 Minhas Reservas</div>
+</div>
+
+<div class="container">
+
+  <!-- ABA: DISPONIBILIDADE -->
+  <div id="sec-disponibilidade" class="secao ativa">
+
+    <div class="destaque">
+      ✅ Apenas unidades <strong>disponíveis</strong> são exibidas. Clique em um empreendimento para ver as unidades e solicitar reserva.
+    </div>
+
+    <div id="lista-empreendimentos"></div>
+
+  </div>
+
+  <!-- ABA: SOLICITAR RESERVA -->
+  <div id="sec-indicar" class="secao">
+    <div class="card">
+      <div class="card-titulo">🔒 Solicitar reserva de unidade</div>
+
+      <div class="aviso">
+        📲 Após o envio, a Casa Certa confirma a reserva diretamente com <strong>você, corretor</strong>. O prazo de reserva é de <strong>48 horas</strong> após confirmação.
+      </div>
+
+      <div class="campo">
+        <label>Seu nome (corretor) <span class="obrig">*</span></label>
+        <input type="text" id="corretor-nome" placeholder="Nome do corretor responsável">
+        <div class="msg-erro" id="err-corretor">Informe seu nome.</div>
+      </div>
+
+      <div class="campo">
+        <label>Empreendimento <span class="obrig">*</span></label>
+        <select id="emp-interesse">
+          <option value="">Selecione...</option>
+        </select>
+        <div class="msg-erro" id="err-emp">Selecione um empreendimento.</div>
+      </div>
+
+      <div class="campo">
+        <label>Unidade desejada <span class="obrig">*</span></label>
+        <select id="unidade-interesse" disabled>
+          <option value="">Selecione o empreendimento primeiro...</option>
+        </select>
+        <div class="msg-erro" id="err-unidade">Selecione uma unidade.</div>
+      </div>
+
+      <div class="campo">
+        <label>Nome do cliente <span class="obrig">*</span></label>
+        <input type="text" id="cli-nome" placeholder="Nome completo do cliente">
+        <div class="msg-erro" id="err-nome">Informe o nome.</div>
+      </div>
+
+      <button class="btn-principal" id="btn-enviar" onclick="enviarIndicacao()">
+        <span id="btn-texto">🔒 Solicitar reserva</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div class="erro-geral" id="erro-geral">
+        Não foi possível enviar. Tente novamente ou ligue: <strong>(21) 96504-7080</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: MINHAS RESERVAS -->
+  <div id="sec-minhas" class="secao">
+    <div class="card">
+      <div class="card-titulo">📊 Suas reservas solicitadas</div>
+      <div id="lista-indicacoes">
+        <p style="color:var(--texto-suave);font-size:14px;text-align:center;padding:20px 0">
+          Carregando suas indicações...
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- OVERLAY SUCESSO -->
+<div class="sucesso-overlay" id="overlay-sucesso">
+  <div class="sucesso-box">
+    <div class="sucesso-icone">🔒</div>
+    <h2>Reserva solicitada!</h2>
+    <p>Protocolo gerado:</p>
+    <div class="protocolo-num" id="num-protocolo">RES-???</div>
+    <p>A Casa Certa vai confirmar a reserva <strong>com você</strong> em breve pelo WhatsApp.</p>
+    <p style="margin-top:8px;font-size:12px;color:var(--texto-suave)">Reserva válida por <strong>48 horas</strong> após confirmação.</p>
+    <br>
+    <button class="btn-fechar" onclick="fecharSucesso()">Solicitar outra reserva</button>
+  </div>
+</div>
+
+<footer>
+  Casa Certa Construtora · CNPJ 33.822.124/0001-01 · Mesquita, RJ
+</footer>
+
+<script>
+// ─── DADOS DA PLANILHA ───────────────────────────────────────
+const EMPREENDIMENTOS = [
+  {
+    id: 'versalhes-62',
+    nome: 'Versalhes 62',
+    entrega: 'Outubro/2026',
+    unidades: [
+      { id: 'Nº 64', tipo: 'Casa Duplex 2 Qts', vaga: 1, status: 'disponivel', valor: 289000 },
+      { id: 'Nº 66', tipo: 'Casa Duplex 2 Qts', vaga: 1, status: 'disponivel', valor: 289000 },
+      { id: 'Nº 68', tipo: 'Casa Duplex 2 Qts', vaga: 1, status: 'disponivel', valor: 289000 },
+      { id: 'APTº 101', tipo: 'Apt 2 Qts + Garden', vaga: 0, status: 'disponivel', valor: 215000 },
+      { id: 'APTº 102', tipo: 'Apt 2 Qts + Garden', vaga: 0, status: 'disponivel', valor: 217000 },
+      { id: 'APTº 103', tipo: 'Apt 2 Qts + Garden', vaga: 0, status: 'disponivel', valor: 217000 },
+      { id: 'APTº 201', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 217000 },
+      { id: 'APTº 202', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 212000 },
+      { id: 'APTº 203', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 212000 },
+      { id: 'APTº 301', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 210000 },
+      { id: 'APTº 302', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 210000 },
+      { id: 'APTº 303', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 210000 },
+    ]
+  },
+  {
+    id: 'antonio-borges-122',
+    nome: 'Antônio Borges 122',
+    entrega: 'Abril/2026',
+    unidades: [
+      { id: 'APTº 101', tipo: '1 Quarto', vaga: 0, status: 'disponivel', valor: 180000 },
+      { id: 'APTº 102', tipo: '2 Quartos', vaga: 1, status: 'reservado', valor: 229000 },
+      { id: 'APTº 103', tipo: '2 Quartos', vaga: 1, status: 'disponivel', valor: 240000 },
+      { id: 'APTº 104', tipo: '2 Qts + Garden', vaga: 1, status: 'reservado', valor: 240000 },
+      { id: 'APTº 105', tipo: '2 Qts + Garden', vaga: 1, status: 'disponivel', valor: 240000 },
+      { id: 'APTº 106', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 215000 },
+      { id: 'APTº 201', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 205000 },
+      { id: 'APTº 202', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 205000 },
+      { id: 'APTº 203', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 205000 },
+      { id: 'APTº 204', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 230000 },
+      { id: 'APTº 205', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 205000 },
+      { id: 'APTº 206', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 204000 },
+      { id: 'APTº 301', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 200000 },
+      { id: 'APTº 302', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 230000 },
+      { id: 'APTº 303', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 230000 },
+      { id: 'APTº 304', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 303500 },
+      { id: 'APTº 305', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 230000 },
+      { id: 'APTº 306', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 199000 },
+    ]
+  },
+  {
+    id: 'macario-250',
+    nome: 'Macário 250',
+    entrega: 'Março/2026',
+    unidades: [
+      { id: '250', tipo: 'Casa Duplex', vaga: 1, status: 'reservado', valor: 290000 },
+      { id: '252', tipo: 'Casa Duplex', vaga: 1, status: 'reservado', valor: 290000 },
+      { id: '254', tipo: 'Casa Duplex', vaga: 1, status: 'reservado', valor: 290000 },
+      { id: 'APTº 101', tipo: '2 Qts + Garden', vaga: 0, status: 'reservado', valor: 215000 },
+      { id: 'APTº 102', tipo: '2 Qts + Garden', vaga: 0, status: 'reservado', valor: 218000 },
+      { id: 'APTº 103', tipo: '2 Qts + Garden', vaga: 0, status: 'disponivel', valor: 218000 },
+      { id: 'APTº 201', tipo: 'Apartamento', vaga: 0, status: 'disponivel', valor: 212000 },
+      { id: 'APTº 202', tipo: 'Apartamento', vaga: 0, status: 'disponivel', valor: 212000 },
+      { id: 'APTº 203', tipo: 'Apartamento', vaga: 0, status: 'disponivel', valor: 212000 },
+      { id: 'APTº 301', tipo: 'Apartamento', vaga: 0, status: 'reservado', valor: 210000 },
+      { id: 'APTº 302', tipo: 'Apartamento', vaga: 0, status: 'reservado', valor: 210000 },
+      { id: 'APTº 303', tipo: 'Apartamento', vaga: 0, status: 'disponivel', valor: 210000 },
+    ]
+  },
+  {
+    id: 'isaura-quintela',
+    nome: 'Isaura Quintela 104',
+    entrega: 'Janeiro/2026',
+    unidades: [
+      { id: '102', tipo: 'Casa Duplex', vaga: 1, status: 'vendido', valor: 236000 },
+      { id: '104', tipo: 'Casa Duplex', vaga: 1, status: 'vendido', valor: 320000 },
+      { id: 'APTº 101', tipo: '2 Qts + Garden', vaga: 0, status: 'reservado', valor: 210000 },
+      { id: 'APTº 102', tipo: '2 Qts + Garden', vaga: 0, status: 'reservado', valor: 210000 },
+      { id: 'APTº 103', tipo: '2 Qts + Garden', vaga: 0, status: 'vendido', valor: 210000 },
+      { id: 'APTº 201', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 225000 },
+      { id: 'APTº 202', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 225000 },
+      { id: 'APTº 203', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 225000 },
+      { id: 'APTº 301', tipo: '2 Quartos', vaga: 0, status: 'vendido', valor: 200000 },
+      { id: 'APTº 302', tipo: '2 Quartos', vaga: 0, status: 'vendido', valor: 199000 },
+      { id: 'APTº 303', tipo: '2 Quartos', vaga: 0, status: 'vendido', valor: 220000 },
+    ]
+  },
+  {
+    id: 'barros-peixoto',
+    nome: 'Barros Peixoto',
+    entrega: 'Janeiro/2026',
+    unidades: [
+      { id: 'Nº 1532', tipo: 'Térreo 2 Qts', vaga: 1, status: 'vendido', valor: 208000 },
+      { id: 'Nº 1534', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'reservado', valor: 174000 },
+      { id: 'Nº 1536', tipo: 'Térreo 2 Qts', vaga: 1, status: 'vendido', valor: 189000 },
+      { id: 'Nº 1538', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'vendido', valor: 174000 },
+      { id: 'Nº 1540', tipo: 'Térreo 2 Qts', vaga: 1, status: 'vendido', valor: 195000 },
+      { id: 'Nº 1542', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'disponivel', valor: 174000 },
+      { id: 'Nº 1544', tipo: 'Térreo 2 Qts', vaga: 1, status: 'vendido', valor: 189000 },
+      { id: 'Nº 1546', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'vendido', valor: 174000 },
+      { id: 'Nº 1548', tipo: 'Térreo 2 Qts', vaga: 1, status: 'reservado', valor: 199000 },
+      { id: 'Nº 1550', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'reservado', valor: 174000 },
+    ]
+  },
+  {
+    id: 'josefina-1085',
+    nome: 'Josefina 1085',
+    entrega: 'A confirmar',
+    unidades: [
+      ...Array.from({length: 12}, (_, i) => {
+        const andar = Math.floor(i/4) + 1;
+        const apt = (i % 4) + 1;
+        return { id: `APTº ${andar}0${apt}`, tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: null };
+      })
+    ]
+  },
+  {
+    id: 'rio-de-janeiro-36',
+    nome: 'Rua Rio de Janeiro 36',
+    entrega: 'A confirmar',
+    unidades: [
+      ...Array.from({length: 24}, (_, i) => {
+        const andar = Math.floor(i/8) + 1;
+        const apt = (i % 8) + 1;
+        return { id: `APTº ${andar}0${apt}`, tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: null };
+      })
+    ]
+  },
+  {
+    id: 'manoel-duarte-559',
+    nome: 'Manoel Duarte 559',
+    entrega: 'Janeiro/2026',
+    unidades: [
+      { id: 'Nº 555', tipo: 'Casa', vaga: 0, status: 'disponivel', valor: null },
+      { id: 'Nº 557', tipo: 'Casa', vaga: 0, status: 'disponivel', valor: null },
+      { id: 'Nº 559', tipo: 'Casa', vaga: 0, status: 'disponivel', valor: null },
+      { id: 'Nº 561', tipo: 'Casa', vaga: 0, status: 'disponivel', valor: null },
+      ...Array.from({length: 8}, (_, i) => {
+        const andar = Math.floor(i/4) + 1;
+        const apt = (i % 4) + 1;
+        return { id: `APTº ${andar}0${apt}`, tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: null };
+      })
+    ]
+  },
+  {
+    id: 'paulo-541',
+    nome: 'Paulo 541',
+    entrega: 'Abril/2026',
+    unidades: [
+      { id: 'APTº 101', tipo: '2 Quartos', vaga: 1, status: 'reservado', valor: 250000 },
+      { id: 'APTº 102', tipo: '2 Quartos', vaga: 1, status: 'reservado', valor: 240000 },
+      { id: 'APTº 103', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 230000 },
+      { id: 'APTº 104', tipo: '2 Quartos', vaga: 1, status: 'reservado', valor: 240000 },
+      { id: 'APTº 201', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
+      { id: 'APTº 202', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
+      { id: 'APTº 203', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
+      { id: 'APTº 204', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
+      { id: 'APTº 301', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 225000 },
+      { id: 'APTº 302', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 225000 },
+      { id: 'APTº 303', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
+      { id: 'APTº 304', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
+    ]
+  },
+];
+
+// ─── IMOBILIÁRIAS ────────────────────────────────────────────
+const IMOBILIARIAS = {
+  morada:        { nome: 'Morada Imóveis',      cor: '#2D6A4F' },
+  sublime:       { nome: 'Sublime Imóvel',       cor: '#7B2D8B' },
+  angelo:        { nome: 'Angelo Imóveis',        cor: '#C0392B' },
+  vanessa:       { nome: 'Vanessa Imóveis',       cor: '#E07B39' },
+  casadabaixada: { nome: 'Casa da Baixada',       cor: '#1A6B8A' },
+  suelyimoveis:  { nome: 'Suely Imóveis',         cor: '#8B6914' },
+};
+
+const WEBHOOK_URL = 'https://n8n-n8n.3nvpcm.easypanel.host/webhook/portal-corretor';
+
+// ─── PASTAS MATERIAL CORRETOR ────────────────────────────────
+const MATERIAL_FOLDERS = {
+  'paulo-541':        'https://drive.google.com/drive/folders/1C2SLl-16O34lutec3WJyJ05GEgsDo7PK',
+  'macario-250':      'https://drive.google.com/drive/folders/1GhVvbkMuZ1X9zHF3sHfqNm1OsoFJsKRE',
+  'manoel-duarte-559':'https://drive.google.com/drive/folders/1JLralMCsfwlVYIf-JNNruU820Ny0MpLm',
+  'versalhes-62':     'https://drive.google.com/drive/folders/1TSarc5NAbs-kRWjJVK2osxdNc8jbAyqp',
+  'antonio-borges-122':'https://drive.google.com/drive/folders/1PrKeEyH_pwBYSRTq6WK1lQAFUMKpjx2T',
+  'barros-peixoto':   'https://drive.google.com/drive/folders/1am4zTMznFZRzxnosyPNxFY8CxpAyQsh6',
+  'josefina-1085':    'https://drive.google.com/drive/folders/1LtSSgE6jAiPrkjpX9mpy3D_J9VrAIlso',
+  'isaura-quintela':  'https://drive.google.com/drive/folders/1Kp4RKwrTP2VHc6Sk51mEUJh2daU0LcsD',
+  'rio-de-janeiro-36':'https://drive.google.com/drive/folders/1tVSQvEdZ1wgk8CzKhzhE3Av8T8EdJ449',
+};
+
+// ─── INIT ─────────────────────────────────────────────────────
+let imobId = 'morada'; // padrão, sobrescrito pela URL
+
+function init() {
+  const path = window.location.pathname;
+  const slug = path.split('/').pop();
+  if (IMOBILIARIAS[slug]) imobId = slug;
+
+  const imob = IMOBILIARIAS[imobId];
+  document.getElementById('badge-imob').textContent = imob.nome;
+  document.title = `Portal Corretor — ${imob.nome}`;
+
+  renderDisponibilidade();
+  popularSelectEmpreendimentos();
+  carregarIndicacoes();
+}
+
+// ─── DISPONIBILIDADE ─────────────────────────────────────────
+function renderDisponibilidade() {
+  const lista = document.getElementById('lista-empreendimentos');
+  lista.innerHTML = '';
+
+  EMPREENDIMENTOS.forEach(emp => {
+    const dispUnidades = emp.unidades.filter(u => u.status === 'disponivel');
+    const totalDisp = dispUnidades.length;
+    const materialUrl = MATERIAL_FOLDERS[emp.id];
+
+    const precos = dispUnidades.filter(u => u.valor).map(u => u.valor);
+    const precoMin = precos.length ? Math.min(...precos) : null;
+    const precoMax = precos.length ? Math.max(...precos) : null;
+
+    const card = document.createElement('div');
+    card.className = 'emp-card';
+    card.innerHTML = `
+      <div class="emp-header" onclick="toggleEmp(this)">
+        <div class="emp-info">
+          <div class="emp-nome">${emp.nome}</div>
+          <div class="emp-meta">
+            <span>📅 Entrega: ${emp.entrega}</span>
+            ${precoMin ? `<span>💰 R$ ${fmt(precoMin)}${precoMax !== precoMin ? ' – R$ ' + fmt(precoMax) : ''}</span>` : ''}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${totalDisp > 0
+            ? `<span class="badge badge-disp">${totalDisp} disponível${totalDisp > 1 ? 'is' : ''}</span>`
+            : `<span class="badge badge-vend">Sem disponibilidade</span>`
+          }
+          <span class="emp-chevron">▾</span>
+        </div>
+      </div>
+      <div class="emp-unidades">
+        <div style="padding:10px 18px;border-bottom:1px solid var(--creme-escuro);display:flex;justify-content:flex-end">
+          <a href="${materialUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--creme-escuro);color:var(--verde);border-radius:7px;padding:7px 14px;font-size:12px;font-weight:bold;text-decoration:none;border:1px solid var(--borda)">
+            📁 Ver fotos e planta
+          </a>
+        </div>
+        ${totalDisp === 0
+          ? `<div style="padding:16px 18px;color:var(--texto-suave);font-size:13px;text-align:center">Todas as unidades estão reservadas ou vendidas.</div>`
+          : dispUnidades.map(u => `
+            <div class="unidade-row disponivel">
+              <div>
+                <div class="unidade-nome">${u.id}</div>
+                <div class="unidade-tipo">${u.tipo}${u.vaga ? ' · 🚗 vaga' : ''}</div>
+              </div>
+              <div class="unidade-valor">${u.valor ? 'R$ ' + fmt(u.valor) : '—'}</div>
+              <button class="btn-indicar-uni" onclick="irParaIndicacao('${emp.id}', '${u.id}')">Reservar</button>
+            </div>
+          `).join('')
+        }
+      </div>
+    `;
+    lista.appendChild(card);
+  });
+}
+
+function toggleEmp(header) {
+  const card = header.closest('.emp-card');
+  card.classList.toggle('aberto');
+}
+
+function fmt(v) {
+  return v.toLocaleString('pt-BR', { minimumFractionDigits: 0 });
+}
+
+// ─── INDICAÇÃO ───────────────────────────────────────────────
+function popularSelectEmpreendimentos() {
+  const sel = document.getElementById('emp-interesse');
+  EMPREENDIMENTOS.forEach(e => {
+    const disp = e.unidades.filter(u => u.status === 'disponivel').length;
+    const opt = document.createElement('option');
+    opt.value = e.id;
+    opt.textContent = `${e.nome} (${disp} disponíveis)`;
+    if (disp === 0) opt.disabled = true;
+    sel.appendChild(opt);
+  });
+
+  sel.addEventListener('change', () => {
+    const empId = sel.value;
+    const uniSel = document.getElementById('unidade-interesse');
+    uniSel.innerHTML = '<option value="">Selecione a unidade...</option>';
+    if (empId) {
+      const emp = EMPREENDIMENTOS.find(e => e.id === empId);
+      emp.unidades.filter(u => u.status === 'disponivel').forEach(u => {
+        const o = document.createElement('option');
+        o.value = u.id;
+        o.textContent = `${u.id} — ${u.tipo}${u.vaga ? ' 🚗' : ''}${u.valor ? ' · R$ ' + fmt(u.valor) : ''}`;
+        uniSel.appendChild(o);
+      });
+      uniSel.disabled = false;
+    } else {
+      uniSel.disabled = true;
+    }
+  });
+}
+
+function irParaIndicacao(empId, unidId) {
+  mudarAba('indicar', document.querySelectorAll('.aba')[1]);
+  document.getElementById('emp-interesse').value = empId;
+  document.getElementById('emp-interesse').dispatchEvent(new Event('change'));
+  setTimeout(() => {
+    document.getElementById('unidade-interesse').value = unidId;
+  }, 50);
+}
+
+async function enviarIndicacao() {
+  let ok = true;
+
+  const corretor = document.getElementById('corretor-nome').value.trim();
+  const emp = document.getElementById('emp-interesse').value;
+  const unidade = document.getElementById('unidade-interesse').value;
+  const nome = document.getElementById('cli-nome').value.trim();
+
+  const setErr = (id, errId, cond) => {
+    document.getElementById(id).classList.toggle('err', cond);
+    document.getElementById(errId).style.display = cond ? 'block' : 'none';
+    if (cond) ok = false;
+  };
+
+  setErr('corretor-nome', 'err-corretor', !corretor);
+  setErr('emp-interesse', 'err-emp', !emp);
+  setErr('unidade-interesse', 'err-unidade', !unidade);
+  setErr('cli-nome', 'err-nome', !nome);
+
+  if (!ok) return;
+
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  document.getElementById('btn-texto').textContent = 'Enviando...';
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('erro-geral').style.display = 'none';
+
+  const empObj = EMPREENDIMENTOS.find(e => e.id === emp);
+  const obs = document.getElementById('cli-obs').value.trim();
+
+  const payload = {
+    imobiliaria_id: imobId,
+    imobiliaria_nome: IMOBILIARIAS[imobId].nome,
+    corretor_nome: corretor,
+    empreendimento_id: emp,
+    empreendimento_nome: empObj.nome,
+    unidade: unidade,
+    cliente_nome: nome,
+    origem: 'portal-corretor',
+    data_solicitacao: new Date().toISOString()
+  };
+
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    const protocolo = data.protocolo || ('RES-' + Date.now().toString().slice(-6));
+
+    document.getElementById('num-protocolo').textContent = protocolo;
+    document.getElementById('overlay-sucesso').classList.add('visivel');
+
+    // Salva localmente
+    const ind = JSON.parse(localStorage.getItem('reservas_' + imobId) || '[]');
+    ind.unshift({ protocolo, corretor, cliente: nome, empreendimento: empObj.nome, unidade, data: new Date().toLocaleDateString('pt-BR'), status: 'Aguardando confirmação' });
+    localStorage.setItem('reservas_' + imobId, JSON.stringify(ind.slice(0, 50)));
+
+  } catch (e) {
+    document.getElementById('erro-geral').style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    document.getElementById('btn-texto').textContent = '🔒 Solicitar reserva';
+    document.getElementById('spinner').style.display = 'none';
+  }
+}
+
+function fecharSucesso() {
+  document.getElementById('overlay-sucesso').classList.remove('visivel');
+  document.getElementById('corretor-nome').value = '';
+  document.getElementById('emp-interesse').value = '';
+  document.getElementById('unidade-interesse').innerHTML = '<option value="">Selecione o empreendimento primeiro...</option>';
+  document.getElementById('unidade-interesse').disabled = true;
+  document.getElementById('cli-nome').value = '';
+  carregarIndicacoes();
+}
+
+// ─── MINHAS RESERVAS ─────────────────────────────────────────
+function carregarIndicacoes() {
+  const ind = JSON.parse(localStorage.getItem('reservas_' + imobId) || '[]');
+  const cont = document.getElementById('lista-indicacoes');
+
+  if (!ind.length) {
+    cont.innerHTML = '<p style="color:var(--texto-suave);font-size:14px;text-align:center;padding:20px 0">Nenhuma reserva solicitada ainda neste dispositivo.</p>';
+    return;
+  }
+
+  cont.innerHTML = ind.map(i => `
+    <div style="padding:12px 0;border-bottom:1px solid var(--creme-escuro)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div>
+          <div style="font-weight:bold;font-size:14px">${i.cliente}</div>
+          <div style="font-size:12px;color:var(--texto-suave);margin-top:2px">${i.empreendimento} · ${i.unidade}</div>
+          <div style="font-size:11px;color:var(--texto-suave);margin-top:2px">👤 ${i.corretor} · 📅 ${i.data}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:monospace;font-size:11px;color:var(--verde);font-weight:bold">${i.protocolo}</div>
+          <span style="background:#FDF0E8;color:var(--laranja);font-size:10px;font-weight:bold;padding:2px 8px;border-radius:20px;margin-top:4px;display:inline-block">${i.status}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── ABA ─────────────────────────────────────────────────────
+function mudarAba(id, el) {
+  document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+  document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
+  el.classList.add('ativa');
+  document.getElementById('sec-' + id).classList.add('ativa');
+  if (id === 'minhas') carregarIndicacoes();
+}
+
+init();
+</script>
+</body>
+</html>

@@ -799,8 +799,8 @@ const MATERIAL_FOLDERS = {
 let imobId = 'morada'; // padrão, sobrescrito pela URL
 
 function init() {
-  const path = window.location.pathname;
-  const slug = path.split('/').pop();
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('c') || '';
   if (IMOBILIARIAS[slug]) imobId = slug;
 
   const imob = IMOBILIARIAS[imobId];

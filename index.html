@@ -947,7 +947,6 @@ async function enviarIndicacao() {
   document.getElementById('erro-geral').style.display = 'none';
 
   const empObj = EMPREENDIMENTOS.find(e => e.id === emp);
-  const obs = document.getElementById('cli-obs').value.trim();
 
   const payload = {
     imobiliaria_id: imobId,

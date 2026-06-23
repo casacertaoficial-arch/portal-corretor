@@ -679,7 +679,12 @@ function renderDisponibilidade() {
 
   EMPREENDIMENTOS.forEach(emp => {
     const dispUnidades = emp.unidades.filter(u => u.status === 'disponivel');
+    const resUnidades = emp.unidades.filter(u => u.status === 'reservado');
+    const vendUnidades = emp.unidades.filter(u => u.status === 'vendido');
     const totalDisp = dispUnidades.length;
+    const totalRes = resUnidades.length;
+    const totalVend = vendUnidades.length;
+
     // Busca material por id, com fallback tolerante a variações
     let materialUrl = MATERIAL_FOLDERS[emp.id];
     if (!materialUrl) {
@@ -690,9 +695,13 @@ function renderDisponibilidade() {
       materialUrl = chave ? MATERIAL_FOLDERS[chave] : '#';
     }
 
-    const precos = dispUnidades.filter(u => u.valor).map(u => u.valor);
+    const precos = emp.unidades.filter(u => u.valor).map(u => u.valor);
     const precoMin = precos.length ? Math.min(...precos) : null;
     const precoMax = precos.length ? Math.max(...precos) : null;
+
+    // Ordena: disponíveis primeiro, depois reservados, depois vendidos
+    const ordem = { disponivel: 0, reservado: 1, vendido: 2 };
+    const unidadesOrdenadas = [...emp.unidades].sort((a,b) => ordem[a.status] - ordem[b.status]);
 
     const card = document.createElement('div');
     card.className = 'emp-card';
@@ -705,11 +714,12 @@ function renderDisponibilidade() {
             ${precoMin ? `<span>💰 R$ ${fmt(precoMin)}${precoMax !== precoMin ? ' – R$ ' + fmt(precoMax) : ''}</span>` : ''}
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          ${totalDisp > 0
-            ? `<span class="badge badge-disp">${totalDisp} disponível${totalDisp > 1 ? 'is' : ''}</span>`
-            : `<span class="badge badge-vend">Sem disponibilidade</span>`
-          }
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <div class="emp-badges">
+            ${totalDisp > 0 ? `<span class="badge badge-disp">${totalDisp} disp.</span>` : ''}
+            ${totalRes > 0  ? `<span class="badge badge-res">${totalRes} res.</span>` : ''}
+            ${totalVend > 0 ? `<span class="badge badge-vend">${totalVend} vend.</span>` : ''}
+          </div>
           <span class="emp-chevron">▾</span>
         </div>
       </div>
@@ -719,19 +729,19 @@ function renderDisponibilidade() {
             📁 Ver fotos e planta
           </a>
         </div>
-        ${totalDisp === 0
-          ? `<div style="padding:16px 18px;color:var(--texto-suave);font-size:13px;text-align:center">Todas as unidades estão reservadas ou vendidas.</div>`
-          : dispUnidades.map(u => `
-            <div class="unidade-row disponivel">
-              <div>
-                <div class="unidade-nome">${u.id}</div>
-                <div class="unidade-tipo">${u.tipo}${u.vaga ? ' · 🚗 vaga' : ''}</div>
-              </div>
-              <div class="unidade-valor">${u.valor ? 'R$ ' + fmt(u.valor) : '—'}</div>
-              <button class="btn-indicar-uni" onclick="irParaIndicacao('${emp.id}', '${u.id}')">Reservar</button>
+        ${unidadesOrdenadas.map(u => `
+          <div class="unidade-row ${u.status}">
+            <div>
+              <div class="unidade-nome">${u.id}</div>
+              <div class="unidade-tipo">${u.tipo}${u.vaga ? ' · 🚗 vaga' : ''}</div>
             </div>
-          `).join('')
-        }
+            <div class="unidade-valor">${u.valor ? 'R$ ' + fmt(u.valor) : '—'}</div>
+            ${u.status === 'disponivel'
+              ? `<button class="btn-indicar-uni" onclick="irParaIndicacao('${emp.id}', '${u.id}')">Reservar</button>`
+              : `<span class="status-pill status-${u.status}">${u.status === 'reservado' ? 'Reservado' : 'Vendido'}</span>`
+            }
+          </div>
+        `).join('')}
       </div>
     `;
     lista.appendChild(card);

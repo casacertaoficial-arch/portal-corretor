@@ -609,166 +609,9 @@
 </footer>
 
 <script>
-// ─── DADOS DA PLANILHA ───────────────────────────────────────
-const EMPREENDIMENTOS = [
-  {
-    id: 'versalhes-62',
-    nome: 'Versalhes 62',
-    entrega: 'Outubro/2026',
-    unidades: [
-      { id: 'Nº 64', tipo: 'Casa Duplex 2 Qts', vaga: 1, status: 'disponivel', valor: 289000 },
-      { id: 'Nº 66', tipo: 'Casa Duplex 2 Qts', vaga: 1, status: 'disponivel', valor: 289000 },
-      { id: 'Nº 68', tipo: 'Casa Duplex 2 Qts', vaga: 1, status: 'disponivel', valor: 289000 },
-      { id: 'APTº 101', tipo: 'Apt 2 Qts + Garden', vaga: 0, status: 'disponivel', valor: 215000 },
-      { id: 'APTº 102', tipo: 'Apt 2 Qts + Garden', vaga: 0, status: 'disponivel', valor: 217000 },
-      { id: 'APTº 103', tipo: 'Apt 2 Qts + Garden', vaga: 0, status: 'disponivel', valor: 217000 },
-      { id: 'APTº 201', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 217000 },
-      { id: 'APTº 202', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 212000 },
-      { id: 'APTº 203', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 212000 },
-      { id: 'APTº 301', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 210000 },
-      { id: 'APTº 302', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 210000 },
-      { id: 'APTº 303', tipo: 'Apt 2 Quartos', vaga: 0, status: 'disponivel', valor: 210000 },
-    ]
-  },
-  {
-    id: 'antonio-borges-122',
-    nome: 'Antônio Borges 122',
-    entrega: 'Abril/2026',
-    unidades: [
-      { id: 'APTº 101', tipo: '1 Quarto', vaga: 0, status: 'disponivel', valor: 180000 },
-      { id: 'APTº 102', tipo: '2 Quartos', vaga: 1, status: 'reservado', valor: 229000 },
-      { id: 'APTº 103', tipo: '2 Quartos', vaga: 1, status: 'disponivel', valor: 240000 },
-      { id: 'APTº 104', tipo: '2 Qts + Garden', vaga: 1, status: 'reservado', valor: 240000 },
-      { id: 'APTº 105', tipo: '2 Qts + Garden', vaga: 1, status: 'disponivel', valor: 240000 },
-      { id: 'APTº 106', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 215000 },
-      { id: 'APTº 201', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 205000 },
-      { id: 'APTº 202', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 205000 },
-      { id: 'APTº 203', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 205000 },
-      { id: 'APTº 204', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 230000 },
-      { id: 'APTº 205', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 205000 },
-      { id: 'APTº 206', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 204000 },
-      { id: 'APTº 301', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 200000 },
-      { id: 'APTº 302', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 230000 },
-      { id: 'APTº 303', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 230000 },
-      { id: 'APTº 304', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 303500 },
-      { id: 'APTº 305', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 230000 },
-      { id: 'APTº 306', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 199000 },
-    ]
-  },
-  {
-    id: 'macario-250',
-    nome: 'Macário 250',
-    entrega: 'Março/2026',
-    unidades: [
-      { id: '250', tipo: 'Casa Duplex', vaga: 1, status: 'reservado', valor: 290000 },
-      { id: '252', tipo: 'Casa Duplex', vaga: 1, status: 'reservado', valor: 290000 },
-      { id: '254', tipo: 'Casa Duplex', vaga: 1, status: 'reservado', valor: 290000 },
-      { id: 'APTº 101', tipo: '2 Qts + Garden', vaga: 0, status: 'reservado', valor: 215000 },
-      { id: 'APTº 102', tipo: '2 Qts + Garden', vaga: 0, status: 'reservado', valor: 218000 },
-      { id: 'APTº 103', tipo: '2 Qts + Garden', vaga: 0, status: 'disponivel', valor: 218000 },
-      { id: 'APTº 201', tipo: 'Apartamento', vaga: 0, status: 'disponivel', valor: 212000 },
-      { id: 'APTº 202', tipo: 'Apartamento', vaga: 0, status: 'disponivel', valor: 212000 },
-      { id: 'APTº 203', tipo: 'Apartamento', vaga: 0, status: 'disponivel', valor: 212000 },
-      { id: 'APTº 301', tipo: 'Apartamento', vaga: 0, status: 'reservado', valor: 210000 },
-      { id: 'APTº 302', tipo: 'Apartamento', vaga: 0, status: 'reservado', valor: 210000 },
-      { id: 'APTº 303', tipo: 'Apartamento', vaga: 0, status: 'disponivel', valor: 210000 },
-    ]
-  },
-  {
-    id: 'isaura-quintela',
-    nome: 'Isaura Quintela 104',
-    entrega: 'Janeiro/2026',
-    unidades: [
-      { id: '102', tipo: 'Casa Duplex', vaga: 1, status: 'vendido', valor: 236000 },
-      { id: '104', tipo: 'Casa Duplex', vaga: 1, status: 'vendido', valor: 320000 },
-      { id: 'APTº 101', tipo: '2 Qts + Garden', vaga: 0, status: 'reservado', valor: 210000 },
-      { id: 'APTº 102', tipo: '2 Qts + Garden', vaga: 0, status: 'reservado', valor: 210000 },
-      { id: 'APTº 103', tipo: '2 Qts + Garden', vaga: 0, status: 'vendido', valor: 210000 },
-      { id: 'APTº 201', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 225000 },
-      { id: 'APTº 202', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 225000 },
-      { id: 'APTº 203', tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: 225000 },
-      { id: 'APTº 301', tipo: '2 Quartos', vaga: 0, status: 'vendido', valor: 200000 },
-      { id: 'APTº 302', tipo: '2 Quartos', vaga: 0, status: 'vendido', valor: 199000 },
-      { id: 'APTº 303', tipo: '2 Quartos', vaga: 0, status: 'vendido', valor: 220000 },
-    ]
-  },
-  {
-    id: 'barros-peixoto',
-    nome: 'Barros Peixoto',
-    entrega: 'Janeiro/2026',
-    unidades: [
-      { id: 'Nº 1532', tipo: 'Térreo 2 Qts', vaga: 1, status: 'vendido', valor: 208000 },
-      { id: 'Nº 1534', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'reservado', valor: 174000 },
-      { id: 'Nº 1536', tipo: 'Térreo 2 Qts', vaga: 1, status: 'vendido', valor: 189000 },
-      { id: 'Nº 1538', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'vendido', valor: 174000 },
-      { id: 'Nº 1540', tipo: 'Térreo 2 Qts', vaga: 1, status: 'vendido', valor: 195000 },
-      { id: 'Nº 1542', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'disponivel', valor: 174000 },
-      { id: 'Nº 1544', tipo: 'Térreo 2 Qts', vaga: 1, status: 'vendido', valor: 189000 },
-      { id: 'Nº 1546', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'vendido', valor: 174000 },
-      { id: 'Nº 1548', tipo: 'Térreo 2 Qts', vaga: 1, status: 'reservado', valor: 199000 },
-      { id: 'Nº 1550', tipo: '2º Pav. 2 Qts', vaga: 0, status: 'reservado', valor: 174000 },
-    ]
-  },
-  {
-    id: 'josefina-1085',
-    nome: 'Josefina 1085',
-    entrega: 'A confirmar',
-    unidades: [
-      ...Array.from({length: 12}, (_, i) => {
-        const andar = Math.floor(i/4) + 1;
-        const apt = (i % 4) + 1;
-        return { id: `APTº ${andar}0${apt}`, tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: null };
-      })
-    ]
-  },
-  {
-    id: 'rio-de-janeiro-36',
-    nome: 'Rua Rio de Janeiro 36',
-    entrega: 'A confirmar',
-    unidades: [
-      ...Array.from({length: 24}, (_, i) => {
-        const andar = Math.floor(i/8) + 1;
-        const apt = (i % 8) + 1;
-        return { id: `APTº ${andar}0${apt}`, tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: null };
-      })
-    ]
-  },
-  {
-    id: 'manoel-duarte-559',
-    nome: 'Manoel Duarte 559',
-    entrega: 'Janeiro/2026',
-    unidades: [
-      { id: 'Nº 555', tipo: 'Casa', vaga: 0, status: 'disponivel', valor: null },
-      { id: 'Nº 557', tipo: 'Casa', vaga: 0, status: 'disponivel', valor: null },
-      { id: 'Nº 559', tipo: 'Casa', vaga: 0, status: 'disponivel', valor: null },
-      { id: 'Nº 561', tipo: 'Casa', vaga: 0, status: 'disponivel', valor: null },
-      ...Array.from({length: 8}, (_, i) => {
-        const andar = Math.floor(i/4) + 1;
-        const apt = (i % 4) + 1;
-        return { id: `APTº ${andar}0${apt}`, tipo: '2 Quartos', vaga: 0, status: 'disponivel', valor: null };
-      })
-    ]
-  },
-  {
-    id: 'paulo-541',
-    nome: 'Paulo 541',
-    entrega: 'Abril/2026',
-    unidades: [
-      { id: 'APTº 101', tipo: '2 Quartos', vaga: 1, status: 'reservado', valor: 250000 },
-      { id: 'APTº 102', tipo: '2 Quartos', vaga: 1, status: 'reservado', valor: 240000 },
-      { id: 'APTº 103', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 230000 },
-      { id: 'APTº 104', tipo: '2 Quartos', vaga: 1, status: 'reservado', valor: 240000 },
-      { id: 'APTº 201', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
-      { id: 'APTº 202', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
-      { id: 'APTº 203', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
-      { id: 'APTº 204', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
-      { id: 'APTº 301', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 225000 },
-      { id: 'APTº 302', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 225000 },
-      { id: 'APTº 303', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
-      { id: 'APTº 304', tipo: '2 Quartos', vaga: 0, status: 'reservado', valor: 219000 },
-    ]
-  },
-];
+// ─── DADOS DA PLANILHA (carregados em tempo real do n8n) ──────
+const API_DISPONIBILIDADE = 'https://n8n-n8n.3nvpcm.easypanel.host/webhook/portal-disponibilidade';
+let EMPREENDIMENTOS = [];
 
 // ─── IMOBILIÁRIAS ────────────────────────────────────────────
 const IMOBILIARIAS = {
@@ -798,7 +641,7 @@ const MATERIAL_FOLDERS = {
 // ─── INIT ─────────────────────────────────────────────────────
 let imobId = 'morada'; // padrão, sobrescrito pela URL
 
-function init() {
+async function init() {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get('c') || '';
   if (IMOBILIARIAS[slug]) imobId = slug;
@@ -807,9 +650,26 @@ function init() {
   document.getElementById('badge-imob').textContent = imob.nome;
   document.title = `Portal Corretor — ${imob.nome}`;
 
+  // Carrega disponibilidade em tempo real da planilha
+  await carregarDisponibilidade();
+
   renderDisponibilidade();
   popularSelectEmpreendimentos();
   carregarIndicacoes();
+}
+
+// ─── CARREGAR DA PLANILHA (n8n) ──────────────────────────────
+async function carregarDisponibilidade() {
+  const lista = document.getElementById('lista-empreendimentos');
+  lista.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--texto-suave)"><div style="width:36px;height:36px;border:4px solid var(--creme-escuro);border-top-color:var(--verde);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div>Carregando disponibilidade...</div>';
+  try {
+    const res = await fetch(API_DISPONIBILIDADE);
+    const data = await res.json();
+    EMPREENDIMENTOS = data.empreendimentos || [];
+  } catch (e) {
+    lista.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--erro)">Não foi possível carregar a disponibilidade.<br>Recarregue a página ou tente mais tarde.</div>';
+    EMPREENDIMENTOS = [];
+  }
 }
 
 // ─── DISPONIBILIDADE ─────────────────────────────────────────
@@ -820,7 +680,15 @@ function renderDisponibilidade() {
   EMPREENDIMENTOS.forEach(emp => {
     const dispUnidades = emp.unidades.filter(u => u.status === 'disponivel');
     const totalDisp = dispUnidades.length;
-    const materialUrl = MATERIAL_FOLDERS[emp.id];
+    // Busca material por id, com fallback tolerante a variações
+    let materialUrl = MATERIAL_FOLDERS[emp.id];
+    if (!materialUrl) {
+      const chave = Object.keys(MATERIAL_FOLDERS).find(k =>
+        emp.id.includes(k) || k.includes(emp.id) ||
+        emp.id.replace(/-\d+$/,'') === k.replace(/-\d+$/,'')
+      );
+      materialUrl = chave ? MATERIAL_FOLDERS[chave] : '#';
+    }
 
     const precos = dispUnidades.filter(u => u.valor).map(u => u.valor);
     const precoMin = precos.length ? Math.min(...precos) : null;
